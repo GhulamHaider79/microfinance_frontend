@@ -1,19 +1,26 @@
 import { NavLink } from 'react-router-dom';
+import Button  from "./Button";
 
 
 
-function Card({ product }) {
+function Card({ title, description, btnTitle }) {
 
   return (
     <>
-      <NavLink className='flex justify-center' to={`/`} key={id}>
-        <div className=" w-[90%] mt-2 sm:mt-6 sm:w-[14rem] bg-gray-300 hover:bg-gradient-to-r hover:from-gray-200 hover:to-gray-400 ease-in rounded-sm h-auto hover:scale-110 transition-transform duration-300 " >
-          <img src={image} className="rounded-sm " alt={name} />
-          <div className="px-4 mt-2 mb-4 flex justify-around items-center">
-            <p className=" font-bold">{name}</p>  
-          </div>
-        </div>
-      </NavLink>
+     <div>
+      <div className='w-72 h-80 bg-slate-300 p-6 rounded-2xl flex flex-col items-center justify-between gap-1.5'>
+        <h1 className='text-2xl font-bold'>{title}</h1>
+        <p className='text-justify'>{description}</p>
+        <NavLink to="LoanPage">
+          <Button
+           type='button'
+           extraClass=" hover:bg-blue-400 transition-colors duration-300 w-40 mt-4"
+          >
+            {btnTitle}
+          </ Button >
+        </NavLink>
+      </div>
+     </div>
     </>
   )
 

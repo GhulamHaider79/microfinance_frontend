@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import Button from "../components/Button";
+import axios from "axios";
 import Swal from 'sweetalert2'
 import RegistrationPage from '../components/RegistrationPage'
 
 function LoanPage() {
   const [category, setCategory] = useState("Wedding Loans");
+   const [subcategory, setSubCategory] = useState("Valima");
   const [loanAmount, setLoanAmount] = useState("");
+  const [initialDeposit, setInitialDeposit] = useState("");
   const [loanPeriod, setLoanPeriod] = useState(1);
   const [error, setError] = useState("");
 
@@ -52,10 +55,30 @@ function LoanPage() {
     setLoanAmount(inputAmount);
   };
 
-  const handelSubmit = (e) => {
+  const handelSubmit = async (e) => {
     e.preventDefault();
-     
-    
+     const loanData = {
+    category,
+    subcategory,
+    loanAmount,
+    loanPeriod,
+    initialDeposit,
+  };
+  try {
+    const response = await axios.post(
+      "https://microfinance-56ai.onrender.com/loan/create",
+      loanData
+    );
+
+    console.log("Loan submitted:", response.data);
+    alert("Loan application submitted successfully!");
+
+  } catch (error) {
+    console.error("Error submitting loan:", error);
+    alert("Failed to submit loan application");
+  }
+
+    // https://microfinance-56ai.onrender.com/
   }
 
   return (
@@ -91,7 +114,7 @@ function LoanPage() {
           </label>
           <select className="bg-slate-50 w-full p-2 border rounded" id="subcategories">
             {categoryData[category].subcategories.map((subcategory, index) => (
-              <option key={index} value={subcategory}>
+              <option key={index} value={subcategory} setSubCategory={subcategory}>
                 {subcategory}
               </option>
             ))}
@@ -135,7 +158,12 @@ function LoanPage() {
        <label htmlFor="initialDeposit" className="font-medium mb-1">
         Initial Deposit
           </label>
-       <input type="text" id="initialDeposit"  className="bg-slate-50 w-full p-2 border rounded"/>
+       <input 
+       type="text" 
+       id="initialDeposit"  
+       className="bg-slate-50 w-full p-2 border rounded"
+       onChange={(e) => setInitialDeposit(e.target.value)}
+       />
        </div>
 
       <Button type="submit">

@@ -23,7 +23,7 @@ function HeroSection() {
         <img className='w-[100%] h-full' src="/images/indian-1283789_1280.jpg" alt="Slide 1" />
       </SwiperSlide>
       <SwiperSlide className='flex justify-center'>
-        <img className='w-[100%]  h-full blur-sm' src="/images/indian-bride-8457513_1280.jpg" alt="Slide 2" />
+        <img className='w-[100%]  h-full' src="/images/indian-bride-8457513_1280.jpg" alt="Slide 2" />
       </SwiperSlide>
       <SwiperSlide className='flex justify-center '>
         <img className='w-[100%] h-full' src="/images/homeless.jpg" alt="Slide 3" />
