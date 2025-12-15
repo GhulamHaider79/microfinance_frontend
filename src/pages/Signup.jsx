@@ -1,18 +1,32 @@
-import React from 'react';
+import React from 'react'
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { TextField, Button, Box } from '@mui/material';
 import Swal from "sweetalert2";
+import axios from 'axios';
 
-const Login = () => {
-  const { register, handleSubmit } = useForm();
+function Signup() {
+   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data) => {
-    if (data.emails === "" || data.password === "") {
+  const onSubmit = async (data) => {
+    if (data.emails === "" || data.password === "" || data.username === "" || data.cnic === "") {
       
       Swal.fire("All fields are required");
       return;
     }
+ 
+  if (data.cnic.length !== 13) {
+     Swal.fire("cnic must be 13 digits long");
+      return;
+  }
+axios.post('https://microfinance-56ai.onrender.com', data)
+  .then(response => {
+    console.log(response.data);})
+  .catch(error => {
+    console.error('There was an error!', error);
+  });
+
+    
     console.log(data);
   };
 
@@ -22,8 +36,13 @@ const Login = () => {
     onSubmit={handleSubmit(onSubmit)} 
     sx={{ width: 300, margin: "auto", mt: 5 }}
     className='bg-gray-400 p-6 rounded-lg shadow-md'>
-      <h3 className='text-center font-bold'>Login</h3>
+      <h3 className='text-center font-bold'>Register</h3>
       <img src="/user.png" alt="image" className='w-16 flex justify-self-center mt-3' />
+       <TextField 
+      {...register("username")} 
+      label="username" 
+      fullWidth margin="normal" 
+      />
       <TextField 
       {...register("email")} 
       label="Email" 
@@ -33,6 +52,12 @@ const Login = () => {
       {...register("password")} 
       label="Password" 
       type="password" 
+      fullWidth margin="normal" 
+      />
+       <TextField 
+      {...register("cnic")} 
+      label="cnic" 
+      type="number" 
       fullWidth margin="normal" 
       />
       <Button 
@@ -45,6 +70,6 @@ const Login = () => {
       <p className='mt-3'>If don't have an Account <Link to='/signup' className='font-semibold text-amber-800 hover:underline' >Signup </Link> </p>
     </Box>
   );
-};
+}
 
-export default Login;
+export default Signup
