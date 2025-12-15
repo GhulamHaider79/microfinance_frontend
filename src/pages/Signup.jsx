@@ -19,7 +19,7 @@ function Signup() {
      Swal.fire("cnic must be 13 digits long");
       return;
   }
-axios.post('https://microfinance-56ai.onrender.com', data)
+axios.post('https://microfinance-56ai.onrender.com/register', data)
   .then(response => {
     console.log(response.data);})
   .catch(error => {
