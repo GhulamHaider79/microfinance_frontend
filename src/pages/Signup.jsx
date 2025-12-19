@@ -1,34 +1,38 @@
-import React from "react";
+import React, {useState} from "react";
 import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { TextField, Button, Box } from "@mui/material";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 // Optional: global config
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 
 function Signup() {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
-
+const {loading, setLoading} = useState(false);
   const onSubmit = async (data) => {
-    console.log(data);
+  setLoading(true);
     if (!data.fullName || !data.email || !data.password || !data.cnic) {
       Swal.fire("All fields are required");
       return;
     }
 
-    if (data.cnic.length !== 13) {
-      Swal.fire("CNIC must be 13 digits long");
-      return;
+    if (data.cnic.length !== 13 || data.cnic.length > 13) {
+          Swal.fire("CNIC must be 13 digits long");
+          return;
+    }
+    if (data.password.length < 6) {
+          Swal.fire("Password must be at least 6 characters long");
+          return;
     }
 
     try {
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://microfinance-56ai.onrender.com/api/auth/register",
         data,
         {
           withCredentials: true,
@@ -38,6 +42,7 @@ function Signup() {
         }
 
       );
+      setLoading(false);
       Swal.fire("Success", "User registered successfully", "success");
       console.log(res.data);
       navigate("/");
@@ -87,10 +92,11 @@ function Signup() {
         fullWidth
         margin="normal"
       />
-
-      <Button type="submit" variant="contained" fullWidth>
+      {loading ? <span>Loading...</span> :<Button type="submit" variant="contained" fullWidth>
         Signup
-      </Button>
+      </Button>}
+
+      
 
       <p className="mt-3">
         Already have an account?{" "}
