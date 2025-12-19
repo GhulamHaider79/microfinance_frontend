@@ -4,11 +4,13 @@ import { useForm } from "react-hook-form";
 import { TextField, Button, Box } from "@mui/material";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // Optional: global config
 axios.defaults.withCredentials = true;
 
 function Signup() {
+  const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
@@ -24,14 +26,22 @@ function Signup() {
     }
 
     try {
-      const res = await axios.post(
-        "https://microfinance-56ai.onrender.com/api/auth/register",
-        data,
-        { withCredentials: true }
-      );
 
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        data,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+
+      );
       Swal.fire("Success", "User registered successfully", "success");
       console.log(res.data);
+      navigate("/");
+
     } catch (error) {
       console.error(error);
       Swal.fire(

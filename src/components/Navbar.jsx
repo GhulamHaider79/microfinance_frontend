@@ -48,7 +48,7 @@ const Navbar = () => {
           </Link> : <button onClick={handleLogout} className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600">
             Logout
           </button> }
-          <Link to="/register" className="hidden md:block px-4 py-2 bg-green-500 rounded hover:bg-green-600">
+          <Link to="/signup" className="hidden md:block px-4 py-2 bg-green-500 rounded hover:bg-green-600">
             Register
           </Link>
         </div>
