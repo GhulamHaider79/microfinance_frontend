@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 function Signup() {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
-const {loading, setLoading} = useState(false);
+const [loading, setLoading] = useState(false);
   const onSubmit = async (data) => {
   setLoading(true);
     if (!data.fullName || !data.email || !data.password || !data.cnic) {

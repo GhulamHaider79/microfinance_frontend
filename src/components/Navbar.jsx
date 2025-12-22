@@ -11,19 +11,28 @@ const Navbar = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
 
-  useEffect(() => {
-    // Check if user is logged in
-    const token = Cookies.get("Auth_Token");
-    if (token) {
+ useEffect(() => {
+  const checkAuth = async () => {
+    try {
+      await axios.get(
+        "https://microfinance-56ai.onrender.com/api/auth/me",
+        { withCredentials: true }
+      );
       setIsLoggedIn(true);
+    } catch {
+      setIsLoggedIn(false);
     }
-  }, []);
+  };
+
+  checkAuth();
+}, []);
+
 
   const handleLogout = async () => {
     try {
       // Make a request to the logout endpoint
       const response = await axios.post(
-        "http://localhost:5000/api/auth/logout",
+        "https://microfinance-56ai.onrender.com/api/auth/logout",
         {},
         { withCredentials: true } 
       );

@@ -1,19 +1,51 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { TextField, Button, Box } from '@mui/material';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (data.emails === "" || data.password === "") {
       
       Swal.fire("All fields are required");
       return;
     }
     console.log(data);
+    try {
+
+      const res = await axios.post(
+        "https://microfinance-56ai.onrender.com/api/auth/login",
+        data,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+
+      );
+      setLoading(false);
+      Swal.fire("Success", "User logged in successfully", "success");
+      console.log(res.data);
+      console.log(res.data.cockie);
+      navigate("/loanPage");
+
+    } catch (error) {
+      console.error(error);
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Something went wrong",
+        "error"
+      );
+    }
+   
   };
 
   return (

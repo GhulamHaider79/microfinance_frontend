@@ -3,6 +3,7 @@ import Button from '../components/Button'
 import LoanPage from './LoanPage';
 import HeroSection from '../components/HeroSection'
 import Card from '../components/Card';
+import FooterSection from '../components/FooterSection';
 
 
 function Home() {
@@ -64,6 +65,9 @@ function Home() {
 
         </div>
       </div>
+
+
+      <FooterSection />
 
     </div>
   );
