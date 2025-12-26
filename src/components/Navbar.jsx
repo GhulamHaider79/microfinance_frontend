@@ -1,43 +1,32 @@
 // src/components/Navbar.jsx
 import { Link } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import {  useState, useContext } from "react";
 import axios from "axios";
-import Cookies from "js-cookie"; 
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 
 
 
 const Navbar = () => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn, } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
 
- useEffect(() => {
-  const checkAuth = async () => {
-    try {
-      await axios.get(
-        "https://microfinance-56ai.onrender.com/api/auth/me",
-        { withCredentials: true }
-      );
-      setIsLoggedIn(true);
-    } catch {
-      setIsLoggedIn(false);
-    }
-  };
-
-  checkAuth();
-}, []);
-
+ 
 
   const handleLogout = async () => {
+    setLoading(true);
     try {
       // Make a request to the logout endpoint
       const response = await axios.post(
         "https://microfinance-56ai.onrender.com/api/auth/logout",
         {},
-        { withCredentials: true } 
+        { withCredentials: true }
       );
       setIsLoggedIn(false);
-      console.log(response.data.message); 
+      navigate("/");
     } catch (error) {
       console.error("Logout failed:", error.response?.data || error.message);
     }
@@ -56,7 +45,7 @@ const Navbar = () => {
             Login
           </Link> : <button onClick={handleLogout} className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600">
             Logout
-          </button> }
+          </button>}
           <Link to="/signup" className="hidden md:block px-4 py-2 bg-green-500 rounded hover:bg-green-600">
             Register
           </Link>

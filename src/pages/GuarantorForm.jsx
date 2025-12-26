@@ -1,0 +1,114 @@
+import React, { useState } from 'react';
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { TextField, Button, Box } from '@mui/material';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
+
+const GuarantorForm = () => {
+  const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+
+
+  const onSubmit = async (data) => {
+
+    if (
+      data.name.trim() === "" ||
+      data.email.trim() === "" ||
+      data.address.trim() === "" ||
+      data.cnic.trim() === "" ||
+      data.city.trim() === "" ||
+      data.country.trim() === ""
+    ) {
+      Swal.fire("All fields are required");
+      return;
+    }
+
+    console.log(data);
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        "https://microfinance-56ai.onrender.com/api/loan/guarantor",
+        data,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+
+      );
+      setLoading(false);
+      Swal.fire("Success", "User logged in successfully", "success");
+      console.log(res.data);
+      console.log(res.data.cockie);
+      navigate("/loanPage");
+
+    } catch (error) {
+      console.error(error);
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Something went wrong",
+        "error"
+      );
+    }
+
+  };
+  return (
+    <div>
+      <Box
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        sx={{ width: 300, margin: "auto", mt: 5 }}
+        className='bg-gray-400 p-6 rounded-lg shadow-md'>
+        <h3 className='text-center font-bold'>Login</h3>
+        <img src="/user.png" alt="image" className='w-16 flex justify-self-center mt-3' />
+        <TextField
+          {...register("name")}
+          label="Guarantor Name"
+          fullWidth margin="normal"
+        />
+        <TextField
+          {...register("email")}
+          label="Email"
+          fullWidth margin="normal"
+        />
+        <TextField
+          {...register("address")}
+          label="Guarantor Address"
+          fullWidth margin="normal"
+        />
+        <TextField
+          {...register("cnic")}
+          label="Guarantor CNIC No"
+          type="number"
+          fullWidth margin="normal"
+        />
+        <TextField
+          {...register("city")}
+          label="Guarantor City"
+          fullWidth margin="normal"
+        />
+        <TextField
+          {...register("country")}
+          label="Guarantor Country"
+          fullWidth margin="normal"
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+        >
+          {loading ? "Loading..." : "Submit"}
+        </Button>
+       
+      </Box>
+    </div>
+  );
+};
+
+export default GuarantorForm;

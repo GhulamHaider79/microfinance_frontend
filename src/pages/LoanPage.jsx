@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import Button from "../components/Button";
 import axios from "axios";
 import Swal from 'sweetalert2'
-import RegistrationPage from '../components/RegistrationPage'
+import { useNavigate } from "react-router-dom";
+
 
 function LoanPage() {
   const [category, setCategory] = useState("Wedding Loans");
    const [subcategory, setSubCategory] = useState("Valima");
-  const [loanAmount, setLoanAmount] = useState("");
-  const [initialDeposit, setInitialDeposit] = useState("");
+  const [loanAmount, setLoanAmount] = useState(0);
+  const [initialDeposit, setInitialDeposit] = useState(0);
   const [loanPeriod, setLoanPeriod] = useState(1);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   // Data for categories
   const categoryData = {
@@ -57,6 +59,9 @@ function LoanPage() {
 
   const handelSubmit = async (e) => {
     e.preventDefault();
+    if(loanAmount === 0 || initialDeposit === 0 ||  loanPeriod < 1){
+ return Swal.fire("Please fill all the fields correctly");
+    }
      const loanData = {
     category,
     subcategory,
@@ -64,21 +69,30 @@ function LoanPage() {
     loanPeriod,
     initialDeposit,
   };
+  console.log("Submitting loan data:", loanData);
   try {
     const response = await axios.post(
-      "https://microfinance-56ai.onrender.com/loan/create",
-      loanData
+      "https://microfinance-56ai.onrender.com/api/loan/apply-loan",
+      loanData,
+      {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+       
     );
 
     console.log("Loan submitted:", response.data);
-    alert("Loan application submitted successfully!");
+    Swal.fire("Loan application submitted successfully!");
+     navigate("/update-borrower-info");
 
   } catch (error) {
     console.error("Error submitting loan:", error);
-    alert("Failed to submit loan application");
+    Swal.fire("Failed to submit loan application");
   }
 
-    // https://microfinance-56ai.onrender.com/
+    
   }
 
   return (
@@ -114,7 +128,7 @@ function LoanPage() {
           </label>
           <select className="bg-slate-50 w-full p-2 border rounded" id="subcategories">
             {categoryData[category].subcategories.map((subcategory, index) => (
-              <option key={index} value={subcategory} setSubCategory={subcategory}>
+              <option key={index} value={subcategory} onChange={(e) => setSubCategory(e.target.value)}>
                 {subcategory}
               </option>
             ))}
@@ -159,8 +173,9 @@ function LoanPage() {
         Initial Deposit
           </label>
        <input 
-       type="text" 
-       id="initialDeposit"  
+       type="number" 
+       id="initialDeposit" 
+        required 
        className="bg-slate-50 w-full p-2 border rounded"
        onChange={(e) => setInitialDeposit(e.target.value)}
        />

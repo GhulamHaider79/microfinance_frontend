@@ -12,6 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
+    setLoading(true);
     if (data.emails === "" || data.password === "") {
       
       Swal.fire("All fields are required");
@@ -72,7 +73,7 @@ const Login = () => {
       variant="contained" 
       fullWidth
       >
-        Login
+        {loading ? "Loading..." : "Login"}
       </Button>
       <p className='mt-3'>If don't have an Account <Link to='/signup' className='font-semibold text-amber-800 hover:underline' >Signup </Link> </p>
     </Box>
