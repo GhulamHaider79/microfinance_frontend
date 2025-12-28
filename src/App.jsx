@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
 import GuarantorForm from "./pages/GuarantorForm";
+import UpdateBorrowerInfo from "./pages/UpdateBorrowerInfo";
 
 const App = () => {
   return (

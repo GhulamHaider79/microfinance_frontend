@@ -12,7 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    setLoading(true);
+   
     if (data.emails === "" || data.password === "") {
       
       Swal.fire("All fields are required");
@@ -20,7 +20,7 @@ const Login = () => {
     }
     console.log(data);
     try {
-
+ setLoading(true);
       const res = await axios.post(
         "https://microfinance-56ai.onrender.com/api/auth/login",
         data,
