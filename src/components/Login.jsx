@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { TextField, Button, Box } from '@mui/material';
@@ -12,15 +12,15 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-   
+
     if (data.emails === "" || data.password === "") {
-      
+
       Swal.fire("All fields are required");
       return;
     }
     console.log(data);
     try {
- setLoading(true);
+      setLoading(true);
       const res = await axios.post(
         "https://microfinance-56ai.onrender.com/api/auth/login",
         data,
@@ -40,38 +40,39 @@ const Login = () => {
 
     } catch (error) {
       console.error(error);
+       setLoading(false);
       Swal.fire(
         "Error",
         error.response?.data?.message || "Something went wrong",
         "error"
       );
     }
-   
+
   };
 
   return (
-    <Box 
-    component="form" 
-    onSubmit={handleSubmit(onSubmit)} 
-    sx={{ width: 300, margin: "auto", mt: 5 }}
-    className='bg-gray-400 p-6 rounded-lg shadow-md'>
+    <Box
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      sx={{ width: 300, margin: "auto", mt: 5 }}
+      className='bg-gray-400 p-6 rounded-lg shadow-md'>
       <h3 className='text-center font-bold'>Login</h3>
       <img src="/user.png" alt="image" className='w-16 flex justify-self-center mt-3' />
-      <TextField 
-      {...register("email")} 
-      label="Email" 
-      fullWidth margin="normal" 
+      <TextField
+        {...register("email")}
+        label="Email"
+        fullWidth margin="normal"
       />
-      <TextField 
-      {...register("password")} 
-      label="Password" 
-      type="password" 
-      fullWidth margin="normal" 
+      <TextField
+        {...register("password")}
+        label="Password"
+        type="password"
+        fullWidth margin="normal"
       />
-      <Button 
-      type="submit" 
-      variant="contained" 
-      fullWidth
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
       >
         {loading ? "Loading..." : "Login"}
       </Button>

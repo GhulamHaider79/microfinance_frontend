@@ -1,16 +1,32 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { TextField, Button, Box } from '@mui/material';
+import { useForm, Controller, set } from "react-hook-form";
+import { TextField, Button, Box, Autocomplete, } from '@mui/material';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 
 const GuarantorForm = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, control } = useForm({
+    defaultValues: {
+      country: "Pakistan",
+    },
+  });
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const countries = [
+    "Pakistan",
+    "India",
+    "United States",
+    "United Kingdom",
+    "Canada",
+    "Australia",
+    "Saudi Arabia",
+    "UAE",
+  ];
+
 
 
 
@@ -27,10 +43,10 @@ const GuarantorForm = () => {
       Swal.fire("All fields are required");
       return;
     }
-
+setLoading(true);
     console.log(data);
     try {
-      setLoading(true);
+      
       const res = await axios.post(
         "https://microfinance-56ai.onrender.com/api/loan/guarantor",
         data,
@@ -40,7 +56,7 @@ const GuarantorForm = () => {
             "Content-Type": "application/json",
           },
         }
-
+       
       );
       setLoading(false);
       Swal.fire("Success", "User logged in successfully", "success");
@@ -50,6 +66,7 @@ const GuarantorForm = () => {
 
     } catch (error) {
       console.error(error);
+      setLoading(false);
       Swal.fire(
         "Error",
         error.response?.data?.message || "Something went wrong",
@@ -63,10 +80,10 @@ const GuarantorForm = () => {
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
-        sx={{ width: 300, margin: "auto", mt: 5 }}
+        sx={{ width: 500, margin: "auto", mt: 5 }}
         className='bg-gray-400 p-6 rounded-lg shadow-md'>
-        <h3 className='text-center font-bold'>Login</h3>
-        <img src="/user.png" alt="image" className='w-16 flex justify-self-center mt-3' />
+        <h3 className='text-center font-bold'>Please Fill Guarantor Information</h3>
+
         <TextField
           {...register("name")}
           label="Guarantor Name"
@@ -93,11 +110,27 @@ const GuarantorForm = () => {
           label="Guarantor City"
           fullWidth margin="normal"
         />
-        <TextField
-          {...register("country")}
-          label="Guarantor Country"
-          fullWidth margin="normal"
+        <Controller
+          name="country"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              options={countries}
+              value={field.value || null}
+              onChange={(e, value) => field.onChange(value)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Guarantor Country"
+                  margin="normal"
+                  fullWidth
+                />
+              )}
+            />
+          )}
         />
+
+
         <Button
           type="submit"
           variant="contained"
@@ -105,7 +138,7 @@ const GuarantorForm = () => {
         >
           {loading ? "Loading..." : "Submit"}
         </Button>
-       
+
       </Box>
     </div>
   );

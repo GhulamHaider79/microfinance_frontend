@@ -8,10 +8,12 @@ import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
 import GuarantorForm from "./pages/GuarantorForm";
 import UpdateBorrowerInfo from "./pages/UpdateBorrowerInfo";
+import { LoanProvider } from "./context/LoanContext";
 
 const App = () => {
   return (
     <Router>
+      <LoanProvider>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -22,7 +24,7 @@ const App = () => {
         <Route path="/update-borrower-info" element={<UpdateBorrowerInfo />} />
       </Routes>
       <FooterSection />
-     
+     </LoanProvider>
     </Router>
   );
 };
