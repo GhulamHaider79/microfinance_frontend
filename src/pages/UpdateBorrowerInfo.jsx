@@ -12,15 +12,16 @@ function UpdateBorrowerInfo() {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
+    console.log(data);
     if (
-      data.fullName.trim() === "" ||
-      data.phoneNumber.trim() === "" ||
-      data.address.trim() === "" ||
-      data.cnic.trim() === "" ||
-      data.city.trim() === "" ||
-      data.country.trim() === "" ||
-      statement.trim() === "" ||
-      salarySheet.trim() === ""
+      !data.fullName.trim() === "" ||
+      !data.phoneNumber.trim() === "" ||
+      !data.address.trim() === "" ||
+      !data.cnic.trim() === "" ||
+      !data.city.trim() === "" ||
+      !data.country.trim() === "" ||
+      !data.statement?.length ||
+      !data.salarySheet?.length
     ) {
       Swal.fire("All fields are required");
       return;
@@ -29,8 +30,8 @@ function UpdateBorrowerInfo() {
     console.log(data);
     try {
       setLoading(true);
-      const res = await axios.post(
-        "https://microfinance-56ai.onrender.com/api/loan/guarantor",
+      const res = await axios.put(
+        "https://microfinance-56ai.onrender.com/api/loan/borrower-info",
         data,
         {
           withCredentials: true,
@@ -47,7 +48,8 @@ function UpdateBorrowerInfo() {
       navigate("/guarantor");
 
     } catch (error) {
-      console.error(error);
+       setLoading(false);
+      console.error("Borrower Info Not Update",error.message);
       Swal.fire(
         "Error",
         error.response?.data?.message || "Something went wrong",
@@ -102,8 +104,8 @@ function UpdateBorrowerInfo() {
           type="file"
           label="Upload Bank Statement"
           InputLabelProps={{ shrink: true }}
-        fullWidth margin="normal"
-         />
+          fullWidth margin="normal"
+        />
         <TextField
           {...register("salarySheet")}
           label="Upload Salary Sheet"
