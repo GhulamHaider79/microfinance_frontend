@@ -13,6 +13,13 @@ import { useLoan } from "../context/LoanContext";
 function LoanPage() {
   const { loan, loading } = useLoan();
   const navigate = useNavigate();
+  const [category, setCategory] = useState("Wedding Loans");
+  const [subcategory, setSubCategory] = useState("Valima");
+  const [loanAmount, setLoanAmount] = useState(0);
+  const [initialDeposit, setInitialDeposit] = useState(0);
+  const [loanPeriod, setLoanPeriod] = useState(1);
+  const [error, setError] = useState("");
+  const [loadingState, setLoadingState] = useState(false);
 
  // 🔁 Auto navigation based on step
    useEffect(() => {
@@ -25,12 +32,7 @@ function LoanPage() {
      }
    }, [loan, navigate]);
 
-  const [category, setCategory] = useState("Wedding Loans");
-  const [subcategory, setSubCategory] = useState("Valima");
-  const [loanAmount, setLoanAmount] = useState(0);
-  const [initialDeposit, setInitialDeposit] = useState(0);
-  const [loanPeriod, setLoanPeriod] = useState(1);
-  const [error, setError] = useState("");
+  
   
 
   // Data for categories
@@ -78,6 +80,7 @@ function LoanPage() {
 
   const handelSubmit = async (e) => {
     e.preventDefault();
+    setLoadingState(true);
     if (loanAmount === 0 || initialDeposit === 0 || loanPeriod < 1) {
       return Swal.fire("Please fill all the fields correctly");
     }
@@ -101,12 +104,13 @@ function LoanPage() {
         }
 
       );
-
+      setLoadingState(false);
       console.log("Loan submitted:", response.data);
       Swal.fire("Loan application submitted successfully!");
       navigate("/update-borrower-info");
 
     } catch (error) {
+      setLoadingState(false);
       console.error("Error submitting loan:", error);
       Swal.fire("Failed to submit loan application");
     }
@@ -201,7 +205,7 @@ function LoanPage() {
         </div>
 
         <Button type="submit">
-          Proced
+         {  loadingState ? 'Loading...' : 'Submit Loan Application'}
         </Button>
       </form>
     </div>
