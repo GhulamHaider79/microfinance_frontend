@@ -18,7 +18,7 @@ const Login = () => {
       Swal.fire("All fields are required");
       return;
     }
-    console.log(data);
+    
     try {
       setLoading(true);
       const res = await axios.post(

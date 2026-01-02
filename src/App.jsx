@@ -9,10 +9,12 @@ import Signup from "./pages/Signup";
 import GuarantorForm from "./pages/GuarantorForm";
 import UpdateBorrowerInfo from "./pages/UpdateBorrowerInfo";
 import { LoanProvider } from "./context/LoanContext";
+import DownloadSlip from "./pages/DownloadSlip";
 
 const App = () => {
   return (
     <Router>
+      
       <LoanProvider>
       <Navbar />
       <Routes>
@@ -22,6 +24,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/guarantor" element={<GuarantorForm />} />
         <Route path="/update-borrower-info" element={<UpdateBorrowerInfo />} />
+        <Route path="/download-slip" element={<DownloadSlip />} />
       </Routes>
       <FooterSection />
      </LoanProvider>

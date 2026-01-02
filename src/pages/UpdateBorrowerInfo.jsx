@@ -1,63 +1,90 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useForm } from "react-hook-form";
 import { TextField, Button, Box } from '@mui/material';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useLoan } from "../context/LoanContext";
 
 function UpdateBorrowerInfo() {
+  const { loan, loading } = useLoan();
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loadingState, setLoadingState] = useState(false);
+
+
+  // 🔁 Auto navigation based on step
+     useEffect(() => {
+       if (!loan) return;
+   
+       if (loan.stepCompleted === 1) {
+         navigate("/update-borrower-info");
+       } else if (loan.stepCompleted === 2) {
+         navigate("/guarantor");
+       }
+     }, [loan, navigate]);
+  
 
   const onSubmit = async (data) => {
-    console.log(data);
-    if (
-      !data.fullName.trim() === "" ||
-      !data.phoneNumber.trim() === "" ||
-      !data.address.trim() === "" ||
-      !data.cnic.trim() === "" ||
-      !data.city.trim() === "" ||
-      !data.country.trim() === "" ||
-      !data.statement?.length ||
-      !data.salarySheet?.length
-    ) {
-      Swal.fire("All fields are required");
-      return;
-    }
 
-    console.log(data);
-    try {
-      setLoading(true);
-      const res = await axios.put(
-        "https://microfinance-56ai.onrender.com/api/loan/borrower-info",
-        data,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+  // ✅ correct validation
+  if (
+    !data.fullName?.trim() ||
+    !data.phoneNumber?.trim() ||
+    !data.address?.trim() ||
+    !data.cnic?.trim() ||
+    !data.city?.trim() ||
+    !data.country?.trim() ||
+    !data.statement?.length ||
+    !data.salarySheet?.length
+  ) {
+    Swal.fire("All fields are required");
+    return;
+  }
 
-      );
-      setLoading(false);
-      Swal.fire("Success", "User logged in successfully", "success");
-      console.log(res.data);
-      console.log(res.data.cockie);
-      navigate("/guarantor");
+  try {
+    setLoadingState(true);
 
-    } catch (error) {
-       setLoading(false);
-      console.error("Borrower Info Not Update",error.message);
-      Swal.fire(
-        "Error",
-        error.response?.data?.message || "Something went wrong",
-        "error"
-      );
-    }
+    const formData = new FormData();
+    formData.append("fullName", data.fullName);
+    formData.append("phoneNumber", data.phoneNumber);
+    formData.append("address", data.address);
+    formData.append("cnic", data.cnic);
+    formData.append("city", data.city);
+    formData.append("country", data.country);
+    formData.append("statement", data.statement[0]);     // 👈 IMPORTANT
+    formData.append("salarySheet", data.salarySheet[0]); // 👈 IMPORTANT
 
-  };
+    const res = await axios.put(
+      "https://microfinance-56ai.onrender.com/api/loan/borrower-info",
+      formData,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    setLoadingState(false);
+    Swal.fire("Success", "Borrower info updated", "success");
+    navigate("/guarantor");
+
+  } catch (error) {
+    setLoadingState(false);
+
+    const message =
+      error.response?.data?.message || "Something went wrong";
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: message,
+    });
+  }
+};
+
   return (
     <div>
       <Box
@@ -118,7 +145,7 @@ function UpdateBorrowerInfo() {
           variant="contained"
           fullWidth
         >
-          {loading ? "Loading..." : "Submit"}
+          {loadingState ? "Loading..." : "Submit"}
         </Button>
 
       </Box>

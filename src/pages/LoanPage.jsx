@@ -1,9 +1,5 @@
 import React, { useEffect, useState, } from "react";
 import Button from "../components/Button";
-
-
-
-
 import axios from "axios";
 import Swal from 'sweetalert2'
 import { useNavigate } from "react-router-dom";
@@ -15,8 +11,8 @@ function LoanPage() {
   const navigate = useNavigate();
   const [category, setCategory] = useState("Wedding Loans");
   const [subcategory, setSubCategory] = useState("Valima");
-  const [loanAmount, setLoanAmount] = useState(0);
-  const [initialDeposit, setInitialDeposit] = useState(0);
+  const [loanAmount, setLoanAmount] = useState();
+  const [initialDeposit, setInitialDeposit] = useState();
   const [loanPeriod, setLoanPeriod] = useState(1);
   const [error, setError] = useState("");
   const [loadingState, setLoadingState] = useState(false);
@@ -29,12 +25,11 @@ function LoanPage() {
        navigate("/update-borrower-info");
      } else if (loan.stepCompleted === 2) {
        navigate("/guarantor");
+     }else if (loan.stepCompleted === 3) {
+       navigate("/download-slip");
      }
    }, [loan, navigate]);
-
   
-  
-
   // Data for categories
   const categoryData = {
     "Wedding Loans": {
@@ -110,10 +105,19 @@ function LoanPage() {
       navigate("/update-borrower-info");
 
     } catch (error) {
-      setLoadingState(false);
-      console.error("Error submitting loan:", error);
-      Swal.fire("Failed to submit loan application");
-    }
+  setLoadingState(false);
+
+  const message =
+    error.response?.data?.message || "Something went wrong";
+
+  console.error("Error submitting loan:", message);
+
+  Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: message,
+  });
+}
 
 
   }
@@ -183,7 +187,7 @@ function LoanPage() {
             className="bg-slate-50 w-full p-2 border rounded"
             id="loanPeriod"
             value={loanPeriod}
-            onChange={(e) => setLoanPeriod(e.target.value)}
+            onChange={(e) => setLoanPeriod(Number(e.target.value))}
           >
             <option value={1}>1 Year</option>
             <option value={2}>2 Years</option>
@@ -196,11 +200,12 @@ function LoanPage() {
             Initial Deposit
           </label>
           <input
-            type="number"
+           type="number"
             id="initialDeposit"
+             placeholder="Enter initial deposit"
             required
             className="bg-slate-50 w-full p-2 border rounded"
-            onChange={(e) => setInitialDeposit(e.target.value)}
+            onChange={(e) => setInitialDeposit(Number(e.target.value))}
           />
         </div>
 

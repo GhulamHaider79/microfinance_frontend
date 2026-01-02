@@ -5,17 +5,20 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+const [user, setUser] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
   const checkAuth = async () => {
     try {
-      await axios.get(
+      const res = await axios.get(
         "https://microfinance-56ai.onrender.com/api/auth/me",
         { withCredentials: true }
       );
       setIsLoggedIn(true);
+      setUser(res.data.user.fullName);
+      console.log("Auth Res",res);
+      
     } catch {
       setIsLoggedIn(false);
     } finally {
@@ -31,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, checkAuth, loading }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, checkAuth, loading, user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
