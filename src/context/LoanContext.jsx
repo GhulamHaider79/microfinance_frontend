@@ -15,7 +15,8 @@ export const LoanProvider = ({ children }) => {
         "https://microfinance-56ai.onrender.com/api/loan/my-loans",
         { withCredentials: true }
       );
-
+   console.log(res);
+   
       if (res.data.loans && res.data.loans.length > 0) {
         setLoan(res.data.loans[0]); // latest loan
       } else {

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { useForm, Controller, set } from "react-hook-form";
 import { TextField, Button, Box, Autocomplete, } from '@mui/material';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useLoan } from "../context/LoanContext";
 import Swal from "sweetalert2";
 
 
@@ -14,7 +15,22 @@ const GuarantorForm = () => {
     },
   });
   const navigate = useNavigate();
+  const { loan, } = useLoan();
   const [loading, setLoading] = useState(false);
+
+
+
+   useEffect(() => {
+       if (!loan) return;
+   
+       if (loan.stepCompleted === 1) {
+         navigate("/update-borrower-info");
+       } else if (loan.stepCompleted === 2) {
+         navigate("/guarantor");
+       }else if (loan.stepCompleted === 3) {
+         navigate("/download-slip");
+       }
+     }, [loan, navigate]);
 
   const countries = [
     "Pakistan",
