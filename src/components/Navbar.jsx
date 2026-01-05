@@ -28,7 +28,8 @@ const Navbar = () => {
         { withCredentials: true }
       );
       navigate("/");
-      setOpen(prev => !prev);
+      // ensure dropdown is closed after logout
+      setOpen(false);
     } catch (error) {
       console.error("Logout failed:", error.response?.data || error.message);
     }
@@ -63,7 +64,8 @@ const Navbar = () => {
             <ul>
               <li>{isLoggedIn && <span className="ml-4 flex items-center gap-2"><FaUser /> {user}</span>}
               </li>
-              <li><Link to="/settings" className=" px-4 py-2 hover:bg-gray-700 flex items-center gap-2"><IoMdSettings /> <span>Settings</span></Link></li>
+              <li>{isLoggedIn && <Link to="/profile" onClick={() => setOpen(false)} className=" px-4 py-2 hover:bg-gray-700 flex items-center gap-2"><FaUser /> <span>Profile</span></Link>}</li>
+              <li><Link to="/settings" onClick={() => setOpen(false)} className=" px-4 py-2 hover:bg-gray-700 flex items-center gap-2"><IoMdSettings /> <span>Settings</span></Link></li>
               <li><button onClick={handleLogout} className="px-4 py-2 cursor-pointer hover:bg-gray-700 w-full text-left">
             Logout
           </button></li>
